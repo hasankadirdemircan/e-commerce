@@ -23,4 +23,6 @@ public class Customer {
     private String password;
 
     private Address address;
+
+    private String roles;
 }
