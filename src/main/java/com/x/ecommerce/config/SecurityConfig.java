@@ -41,6 +41,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(a -> a
                         .requestMatchers("/customer/addCustomer", "/customer/getToken").permitAll()
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .requestMatchers("/actuator/**", "**/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
