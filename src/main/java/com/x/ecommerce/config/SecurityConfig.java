@@ -41,7 +41,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(a -> a
                         .requestMatchers("/customer/addCustomer", "/customer/getToken").permitAll()
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
-                        .requestMatchers("/actuator/**", "**/actuator/**").permitAll()
+                       // .requestMatchers("/actuator/**", "**/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -49,7 +49,9 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+/*
+swagger uri : http://localhost:8080/swagger-ui/index.html?continue#/
+ */
     private static final String[] AUTH_WHITE_LIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
