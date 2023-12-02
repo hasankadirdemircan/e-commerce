@@ -24,7 +24,7 @@ public class OrderController {
 }
 /*
 TODO: MapStruct'ı araştır,uygulayabilirsen buraya uygula. DTO ve Entity farkları tekrar et.
-TODO: quantity kontrolü sağla -> yani üründen 5 tane kaldıysa, 5 den fazla satamaz.
+TODO: quantity kontrolü sağla(product unitInStock kontrolü) -> yani üründen 5 tane kaldıysa, 5 den fazla satamaz.
 TODO: ürün satıldığında Product tablosundan quantity'i update et.-> yani 5 ürün var 2 tane satıldı, 3 kalacak.
 TODO: eğer 5 ürün var ve 5 üründe satıldı. Product tablosundan product active=false
  */

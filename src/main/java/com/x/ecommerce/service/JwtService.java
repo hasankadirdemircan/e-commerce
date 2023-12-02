@@ -1,5 +1,6 @@
 package com.x.ecommerce.service;
 
+import com.x.ecommerce.dto.LoginDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -45,11 +46,13 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateToken(Authentication authentication) {
+    public LoginDto generateToken(Authentication authentication) {
+        LoginDto loginDto = new LoginDto();
         Map<String, Object> claims = new HashMap<>();
         claims.put("authorities", authentication.getAuthorities());
         claims.put("name", authentication.getName());
-        return createToken(claims, authentication.getName());
+        loginDto.setToken(createToken(claims, authentication.getName()));
+        return loginDto;
     }
 
     private String createToken(Map<String, Object> claims, String userName) {

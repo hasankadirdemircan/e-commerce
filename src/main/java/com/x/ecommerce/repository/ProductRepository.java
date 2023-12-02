@@ -22,4 +22,5 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT p.price FROM Product p where id = :id")
     Double findProductPriceById(@Param("id") Long id);
 
+    //TODO: bu adet(unitInStock kontrolü için)
 }

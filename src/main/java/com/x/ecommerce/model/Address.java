@@ -1,6 +1,8 @@
 package com.x.ecommerce.model;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 //TODO: Burada country, city, district gibi field'ları başka bir api'dan
 // restTemplate ile çekebiliriz.
@@ -8,6 +10,8 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 // Çünkü Address class'ını Customer Entity'sinde kullanıyoruz.
 // Entity olduğu için gerekli. Düz modelde gerek yok.
+@Getter
+@Setter
 public class Address {
 
     private String country;

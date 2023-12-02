@@ -8,6 +8,7 @@ import com.x.ecommerce.repository.OrderDetailRepository;
 import com.x.ecommerce.repository.OrderRepository;
 import com.x.ecommerce.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +32,26 @@ public class OrderService {
         //orderDetailRepository işlemleri için queue mekanizması yazılabilir.
         //Yani ben ordered'ı return deyip, detail işlemleri queue ile yaparım.
         orderRequest.getOrderProductInfoList().forEach(e -> {
-            Double price = productRepository.findProductPriceById(e.getProductId());
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setPrice(price);
-            orderDetail.setQuantity(e.getQuantity());
-            orderDetail.setProductId(e.getProductId());
-            orderDetail.setOrderId(ordered.getId());
-            orderDetailRepository.save(orderDetail);
+            //Double price = productRepository.findProductPriceById(e.getProductId());
+            Optional<Product> product = productRepository.findById(e.getProductId());
+            if(product.isPresent()) {
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setPrice(product.get().getPrice());
+                orderDetail.setQuantity(e.getQuantity());
+                orderDetail.setProductId(e.getProductId());
+                orderDetail.setOrderId(ordered.getId());
+                orderDetailRepository.save(orderDetail);
+                Long lastUnitInStock = product.get().getUnitsInStock();
+                if(lastUnitInStock - e.getQuantity() == 0) {
+                    product.get().setActive(false);
+                }
+                //TODO: Eğer fron-end olur da elimizdeki ürün adedinden daha fazlasını satın almak istediği quantity yollarsa hata atın.(if condition ve new throw Error)
+                /**
+                 * if(lastUnitInStock (5) - e.getQuantity()(10) < 0) {
+                 */
+                product.get().setUnitsInStock(lastUnitInStock - e.getQuantity());
+                productRepository.save(product.get());
+            }
         });
     }
 }
