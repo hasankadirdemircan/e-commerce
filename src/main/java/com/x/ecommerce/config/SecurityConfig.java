@@ -39,7 +39,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(a -> a
-                        .requestMatchers("/customer/addCustomer", "/customer/getToken").permitAll()
+                        .requestMatchers("/customer/addCustomer", "/customer/getToken", "/customer/log").permitAll()
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
                        // .requestMatchers("/actuator/**", "**/actuator/**").permitAll()
                         .anyRequest().authenticated()

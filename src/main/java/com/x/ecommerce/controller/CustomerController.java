@@ -5,7 +5,9 @@ import com.x.ecommerce.dto.LoginDto;
 import com.x.ecommerce.model.Customer;
 import com.x.ecommerce.service.CustomerService;
 import com.x.ecommerce.service.JwtService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +15,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/customer")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@Slf4j
 public class CustomerController {
 
     @Autowired
@@ -50,8 +49,8 @@ public class CustomerController {
 }
  */
     @PostMapping("/addCustomer")
-    public String addUser(@RequestBody Customer customer) {
-        return customerService.addCustomer(customer);
+    public ResponseEntity<Customer> addUser(@RequestBody Customer customer) {
+        return new ResponseEntity<>(customerService.addCustomer(customer), HttpStatus.OK);
     }
 
     @PostMapping("/getToken")
@@ -63,5 +62,10 @@ public class CustomerController {
         }
 
         throw new UsernameNotFoundException("invalid user details.");
+    }
+
+    @GetMapping("/log")
+    public void logging() {
+        log.info("testtttttt");
     }
 }

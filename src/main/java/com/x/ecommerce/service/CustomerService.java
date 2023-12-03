@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class CustomerService {
 
@@ -15,9 +17,11 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public String addCustomer(Customer customer) {
+    public Customer addCustomer(Customer customer) {
+        if(Objects.isNull(customer.getRoles())) {
+            customer.setRoles("ROLE_USER");
+        }
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customerRepository.save(customer);
-        return "user added to system ";
+        return customerRepository.save(customer);
     }
 }

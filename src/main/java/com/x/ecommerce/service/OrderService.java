@@ -1,5 +1,6 @@
 package com.x.ecommerce.service;
 
+import com.x.ecommerce.dto.OrderProductInfo;
 import com.x.ecommerce.dto.OrderRequest;
 import com.x.ecommerce.model.Order;
 import com.x.ecommerce.model.OrderDetail;
@@ -8,8 +9,11 @@ import com.x.ecommerce.repository.OrderDetailRepository;
 import com.x.ecommerce.repository.OrderRepository;
 import com.x.ecommerce.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,14 +21,29 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class OrderService {
-
+//TODO: Log ekleyiniz.
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
 
+    private void productUnitStockCheck(List<OrderProductInfo> orderProductInfoList) {
+        orderProductInfoList.forEach(productInfo -> {
+            Long productStock = productRepository.findById(productInfo.getProductId())
+                    .map(Product::getUnitsInStock)
+                    .orElseThrow(() -> new RuntimeException("Ürün bulunamadı: " + productInfo.getProductId()));
+
+            if (productInfo.getQuantity() - productStock < 0) {
+                log.error("ürün db de istenilen kadar yok ürün id: {} adedi: {}", productInfo.getProductId(), productInfo.getQuantity());
+                throw new RuntimeException("Sepetteki ürünlerden en az bir tanesinin stoğu istenilen kadar yoktur.");
+            }
+        });
+    }
     public void doOrder(OrderRequest orderRequest) {
+        log.info("order isteği geldi time: {} customer : {}", LocalDateTime.now(), orderRequest.getCustomerId());
         //MapStruct kütüphanesini araştıralım ve örnek yapalım.
+        productUnitStockCheck(orderRequest.getOrderProductInfoList());
         Order order = new Order();
         order.setCustomerId(orderRequest.getCustomerId());
         order.setOrderDate(LocalDateTime.now());
