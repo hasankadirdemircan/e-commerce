@@ -3,8 +3,10 @@ package com.x.ecommerce.controller;
 import com.x.ecommerce.model.Product;
 import com.x.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,8 +25,8 @@ public class ProductController {
 
     @GetMapping("/category/{categoryId}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public List<Product> getProductList(@PathVariable(value = "categoryId") Long categoryId) {
-        return productService.getProductList(categoryId);
+    public ResponseEntity<List<Product>>  getProductList(@PathVariable(value = "categoryId") Long categoryId) {
+        return new ResponseEntity<>(productService.getProductList(categoryId), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

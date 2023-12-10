@@ -6,6 +6,7 @@ import com.x.ecommerce.service.UserInfoUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,10 +38,12 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(a -> a
                         .requestMatchers("/customer/addCustomer", "/customer/getToken", "/customer/log").permitAll()
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                        // .requestMatchers("/actuator/**", "**/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
