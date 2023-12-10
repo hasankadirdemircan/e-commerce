@@ -1,6 +1,8 @@
 package com.x.ecommerce.service;
 
 import com.x.ecommerce.dto.LoginDto;
+import com.x.ecommerce.model.Customer;
+import com.x.ecommerce.repository.CustomerRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -8,15 +10,23 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;
 
+import javax.swing.text.html.Option;
+
 @Service
+@RequiredArgsConstructor
 public class JwtService {
+
+    private final CustomerRepository customerRepository;
 
     public static final String SECRET = "404D635166546A576E5A7234753778214125442A472D4B6150645267556B5870";
 
@@ -47,10 +57,16 @@ public class JwtService {
     }
 
     public LoginDto generateToken(Authentication authentication) {
+
         LoginDto loginDto = new LoginDto();
+        Optional<Customer> customerOptional = customerRepository.findByFirstName(authentication.getName());
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("authorities", authentication.getAuthorities());
         claims.put("name", authentication.getName());
+        if(customerOptional.isPresent()) {
+            loginDto.setCustomerId(customerOptional.get().getId());
+        }
         loginDto.setToken(createToken(claims, authentication.getName()));
         return loginDto;
     }

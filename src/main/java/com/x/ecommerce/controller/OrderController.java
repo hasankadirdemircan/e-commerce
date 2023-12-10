@@ -1,8 +1,11 @@
 package com.x.ecommerce.controller;
 
 import com.x.ecommerce.dto.OrderRequest;
+import com.x.ecommerce.model.Order;
 import com.x.ecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +18,8 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public void doOrder(@RequestBody OrderRequest orderRequest) {
-        orderService.doOrder(orderRequest);
+    public ResponseEntity<Order> doOrder(@RequestBody OrderRequest orderRequest) {
+        return new ResponseEntity<>(orderService.doOrder(orderRequest), HttpStatus.OK);
     }
 }
 /*

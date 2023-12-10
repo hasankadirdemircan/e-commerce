@@ -55,7 +55,6 @@ public class CustomerController {
     @PostMapping("/getToken")
     public ResponseEntity<LoginDto> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-
         if (authentication.isAuthenticated()) {
             return new ResponseEntity<>(jwtService.generateToken(authentication), HttpStatus.OK);
         }

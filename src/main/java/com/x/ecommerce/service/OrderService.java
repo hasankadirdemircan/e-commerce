@@ -34,13 +34,13 @@ public class OrderService {
                     .map(Product::getUnitsInStock)
                     .orElseThrow(() -> new RuntimeException("Ürün bulunamadı: " + productInfo.getProductId()));
 
-            if (productInfo.getQuantity() - productStock < 0) {
+            if (productStock - productInfo.getQuantity() < 0) {
                 log.error("ürün db de istenilen kadar yok ürün id: {} adedi: {}", productInfo.getProductId(), productInfo.getQuantity());
                 throw new RuntimeException("Sepetteki ürünlerden en az bir tanesinin stoğu istenilen kadar yoktur.");
             }
         });
     }
-    public void doOrder(OrderRequest orderRequest) {
+    public Order doOrder(OrderRequest orderRequest) {
         log.info("order isteği geldi time: {} customer : {}", LocalDateTime.now(), orderRequest.getCustomerId());
         //MapStruct kütüphanesini araştıralım ve örnek yapalım.
         productUnitStockCheck(orderRequest.getOrderProductInfoList());
@@ -72,5 +72,6 @@ public class OrderService {
                 productRepository.save(product.get());
             }
         });
+        return ordered;
     }
 }
