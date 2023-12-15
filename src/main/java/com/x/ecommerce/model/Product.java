@@ -3,6 +3,7 @@ package com.x.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "product")
@@ -15,7 +16,6 @@ public class Product {
     private Long id;
 
     private String name;
-
     private Double price;
 
     @Column(name = "units_in_stock")
@@ -25,6 +25,9 @@ public class Product {
     private Long categoryId;
 
     private Boolean active;
+
+    @Column(name = "product_image_url")
+    private String image;
     //TODO: yorumlar - puanlama
     //TODO: ürün özellikleri
 }

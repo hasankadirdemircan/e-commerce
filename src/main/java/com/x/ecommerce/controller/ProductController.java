@@ -4,9 +4,11 @@ import com.x.ecommerce.model.Product;
 import com.x.ecommerce.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,13 +21,14 @@ public class ProductController {
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Product saveProduct(@RequestBody Product product) {
-        return productService.saveProduct(product);
+    public Product saveProduct(@RequestPart("file") MultipartFile file,
+                               @RequestPart("product") Product product) {
+        return productService.saveProduct(file, product);
     }
 
     @GetMapping("/category/{categoryId}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<List<Product>>  getProductList(@PathVariable(value = "categoryId") Long categoryId) {
+    public ResponseEntity<List<Product>> getProductList(@PathVariable(value = "categoryId") Long categoryId) {
         return new ResponseEntity<>(productService.getProductList(categoryId), HttpStatus.OK);
     }
 
@@ -50,5 +53,26 @@ public class ProductController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void activeProduct(@PathVariable(value = "id") Long id) {
          productService.activeProduct(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable(value = "id") Long id) {
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<Product>> getAllProduct(){
+        return new ResponseEntity<>(productService.getAllProduct(), HttpStatus.OK);
+
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public Product updateProduct(@RequestPart(value = "file",required = false) MultipartFile file,
+                               @RequestPart("product") Product product) {
+        return productService.updateProduct(file, product);
     }
 }
